@@ -20,3 +20,4 @@ var fountain =  document.getElementById('fountain')
 var didcot =  document.getElementById('didcot')
 
 console.log(domain)
+console.log(beacon)
