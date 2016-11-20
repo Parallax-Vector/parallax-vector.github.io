@@ -19,5 +19,5 @@ var blog =  document.getElementById('blog');
 var fountain =  document.getElementById('fountain');
 var didcot =  document.getElementById('didcot');
 
-console.log(domain.getAttribute("href"));
-console.log(beacon);
+console.log(domain);
+console.log(beacon.getAttribute("href"));
