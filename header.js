@@ -1,6 +1,6 @@
 var domain = window.location.host;
 
-var home =  document.getElementById('home').value;
+var home =  document.getElementById('home');
 var about =  document.getElementById('about');
 var leaders =  document.getElementById('our_leaders');
 var mission =  document.getElementById('mission');
