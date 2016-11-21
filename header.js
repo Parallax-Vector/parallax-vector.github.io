@@ -1,6 +1,6 @@
 var domain = location.host
 var protocol = location.protocol;
-var root = protocol + "//" + domain
+var root = protocol + "//" + domain;
 
 var home =  root;
 var about =  root+"/about/";
