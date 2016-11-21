@@ -1,6 +1,6 @@
 var domain = location.host
 
-var home =  ldomain;
+var home =  domain;
 var about =  "/about/";
 var leaders =  "/about/leaders/";
 var mission =  "/about/mission/";
