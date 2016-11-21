@@ -12,4 +12,4 @@ document.getElementById("sermon4").innerHTML = "hello!";
 document.getElementById("sermon4-desc").innerHTML = "hello!";
 
 /*Set link to twitter timeline for events*/
-document.getElementById("twitter-events").setAttribute("href","http://twitter.com/google");
+document.getElementById("twitter-events").href("http://twitter.com/google");
