@@ -21,7 +21,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(1200, 600);
   colorMode(HSB);
   angleMode(DEGREES);
   pauseButton = createButton('Pause | Play');
@@ -34,7 +34,8 @@ function setup() {
 
 function draw() {
     background(0);
-    drawSpiral(0,50,500,550);
+    drawSpiral(0, 0, width/2, height);
+    drawBars(width/2, 0, width, height);
   }
 
 function drawSpiral(left,top,right,bottom) {
@@ -51,7 +52,7 @@ function drawSpiral(left,top,right,bottom) {
     for (var i = 0; i < spectrum.length; i++) {
         var angle = map(i, 0, spectrum.length, 0, 360);
         var amp = spectrum[i];
-        var r = map(amp, 0, 256, 20, radius);
+        var r = map(amp, 0, 256, 20, radius-10);
         var x = r * cos(angle);
         var y = r * sin(angle);
         stroke(i, 255, 255);
@@ -62,6 +63,19 @@ function drawSpiral(left,top,right,bottom) {
     }
 }
 
-function drawBars() {
+function drawBars(left, top, right, bottom) {
+    var spectrum = fft.analyze();
+    stroke(255);
+    var graphWidth = right - left;
+    var graphHeight = bottom - top;
+    translate(left-(graphWidth/2),graphHeight/2);
+    var barWidth = graphWidth / spectrum.length;
+    strokeWeight(barWidth-1);
+    console.log(graphHeight/2);
+    for (var i = 0; i < spectrum.length; i++) {
+        var amp = map(spectrum[i],0,256,graphHeight/256,graphHeight);
+        fill(255);
+        line(i * barWidth, 0 - amp, i * barWidth, 0);
+    }
 
 }
