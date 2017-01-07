@@ -1,9 +1,19 @@
+//TheMiner63
+//Credit to Daniel Shiffman
+//Work originally inspired by his FFT Analysis Spiral - https://www.youtube.com/watch?v=2O3nm0Nvbi4
+//This sketch file, and the linked html document are opensource. The soud files may be subject to copyright.
+
+//General instances
 var song;
 var fft;
 var amplitude;
-
+//Canvas Visual Properties
+var margin = 10;
+//Audio Properties
 var volumeHistory = [];
-
+var ampRecord = 0;
+var beatInterval = 0;
+//Buttons
 var pauseButton;
 var restartButton;
 
@@ -26,19 +36,15 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth, windowHeight-20);
-    colorMode(HSB);
     angleMode(DEGREES);
     pauseButton = createButton('Pause | Play');
     restartButton = createButton('Restart');
     pauseButton.mousePressed(toggleSong);
     restartButton.mousePressed(restartSong);
-    song.play();
-    fft = new p5.FFT(0.9, 128);
-    amplitude = new p5.Amplitude(0.9);
+    fft = new p5.FFT(0.85, 128);
+    amplitude = new p5.Amplitude(0.85);
     amplitude.setInput(song);
-    for (i = 0; i < 100; i++) {
-        volumeHistory[i] = 0;
-    }
+    song.play();
 }
 
 function draw() {
@@ -48,68 +54,84 @@ function draw() {
     drawBars(0, height/2, width/2, height);
   }
 
-function drawSpiral(left,top,right,bottom) {
-    var spectrum = fft.analyze();
-    strokeWeight(4);
-    var spiralWidth = right - left;
-    var spiralHeight = bottom - top;
-    if (spiralHeight > spiralWidth) {
-        var radius = spiralWidth/2;
-    } else {
-        var radius = spiralHeight/2;
-    }
+function drawSpiral(left, top, right, bottom) {
+    //Positioning
     push();
-    var trans = [left + (spiralWidth / 2), top + (spiralHeight / 2)];
-    translate(trans[0],trans[1]);
+    var spiralWidth = right - left - (margin * 2);
+    var spiralHeight = bottom - top - (margin * 2);
+    translate(left + (spiralWidth / 2) + margin, top + (spiralHeight / 2) + margin);
+    if (spiralHeight > spiralWidth) {
+        var radius = spiralWidth / 2;
+    } else {
+        var radius = spiralHeight / 2;
+    }
+    //Audio Processing
+    var spectrum = fft.analyze();
+    //Visual Representation
+    colorMode(HSB);
+    strokeWeight(4);
     for (var i = 0; i < spectrum.length; i++) {
         var angle = map(i, 0, spectrum.length, 0, 360);
         var amp = spectrum[i];
-        var r = map(amp, 0, 256, 20, radius-10);
+        var r = map(amp, 0, 256, 20, radius);
         var x = r * cos(angle);
         var y = r * sin(angle);
         stroke(i, 255, 255);
         line(0, 0, x, y);
-        //vertex(x, y);
-        //var y = map(amp, 0, 256, height, 0);
-        //rect(i * w, y, w - 2, height - y);
     }
     pop();
 }
 
 function drawBars(left, top, right, bottom) {
-    var spectrum = fft.analyze();
-    stroke(255);
-    var graphWidth = right - left;
-    var graphHeight = bottom - top;
+    //Positioning
     push();
-    var trans = [left, bottom];
-    translate(trans[0], trans[1]);
+    var graphWidth = right - left - (margin * 2);
+    var graphHeight = bottom - top - (margin*2);
+    translate(left + margin, bottom - margin);
+    //Audio Processing
+    var spectrum = fft.analyze();
+    //Visual Representation
     var barWidth = graphWidth / spectrum.length;
-    strokeWeight(barWidth - 1);
+    stroke(255);
+    strokeWeight(barWidth - 2);
     for (var i = 0; i < spectrum.length; i++) {
         var amp = map(spectrum[i],0,256,graphHeight/256,graphHeight);
-        fill(255);
         line(i * barWidth, 0 - amp, i * barWidth, 0);
     }
     pop();
 }
 
 function drawAmplitude(left, top, right, bottom) {
-    var graphWidth = right - left;
-    var graphHeight = bottom - top;
+    //Positioning
     push();
-    translate(left, bottom);
-    var soundLevel = int(map(amplitude.getLevel(), 0, 1, 0, graphHeight));
-    stroke(255);
-    strokeWeight(10);
-    fill(255);
+    var graphWidth = right - left - (margin * 2);
+    var graphHeight = bottom - top - (margin * 2);
+    translate(left + margin, bottom - (graphHeight / 2) - margin);
+    //Audio Processing
+    var soundLevel = int(map(amplitude.getLevel(), 0, 1, 0, graphHeight/2));
     volumeHistory.reverse();
     volumeHistory.pop();
     volumeHistory.reverse();
     volumeHistory.push(soundLevel);
-    for (i = 0; i < volumeHistory.length; i++) {
-        line(i * 11, -volumeHistory[i], i * 11, -volumeHistory[i])
+    while (volumeHistory.length < 64) {
+        volumeHistory.push(0);
     }
-    //line(100, 0 - soundLevel, 300, 0 - soundLevel);
+    //Visual Representation
+    colorMode(RGB);
+    if (volumeHistory[volumeHistory.length - 1] > ampRecord) {
+        ampRecord = volumeHistory[volumeHistory.length - 1];
+    }
+    strokeWeight(graphWidth / volumeHistory.length - 2);
+    for (i = 0; i < volumeHistory.length; i++) {
+        if (volumeHistory[i] >= ampRecord) {
+            stroke(255, 0, 0);
+        } else {
+            stroke(255);
+        }
+        line(i * (graphWidth / volumeHistory.length), -volumeHistory[i], i * (graphWidth / volumeHistory.length), volumeHistory[i]);
+    }
+    strokeWeight((graphWidth / volumeHistory.length - 2) / 2);
+    stroke(255, 0, 0);
+    line(graphWidth, -graphHeight / 2, graphWidth, graphHeight / 2);
     pop();
 }
