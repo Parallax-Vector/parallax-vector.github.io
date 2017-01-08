@@ -175,21 +175,21 @@ function drawDissection(left, top, right, bottom) {
     bassHistory.reverse();
     bassHistory.pop();
     bassHistory.reverse();
-    bassHistory.push(bassLvl);
+    bassHistory.push(map(bassLvl,0,255,0,graphHeight));
     while (bassHistory.length < historyLength) {
         bassHistory.push(0);
     }
     midHistory.reverse();
     midHistory.pop();
     midHistory.reverse();
-    midHistory.push(midLvl);
+    midHistory.push(map(midLvl, 0, 255, 0, graphHeight));
     while (midHistory.length < historyLength) {
         midHistory.push(0);
     }
     trebleHistory.reverse();
     trebleHistory.pop();
     trebleHistory.reverse();
-    trebleHistory.push(trebleLvl);
+    trebleHistory.push(map(trebleLvl, 0, 255, 0, graphHeight));
     while (trebleHistory.length < historyLength) {
         trebleHistory.push(0);
     }
