@@ -3,6 +3,8 @@
 //Work originally inspired by his FFT Analysis Spiral - https://www.youtube.com/watch?v=2O3nm0Nvbi4
 //This sketch file, and the linked html document are opensource. The soud files may be subject to copyright.
 
+//Add a toggle bar!
+
 //General instances
 var song;
 var fft;
@@ -42,7 +44,8 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(windowWidth, windowHeight-20);
+    createCanvas(windowWidth, windowHeight);
+    frameRate(20);
     angleMode(DEGREES);
     pauseButton = createButton('Pause | Play');
     restartButton = createButton('Restart');
@@ -70,7 +73,6 @@ function draw() {
     drawSpiral(0, 0, width/2, height/2);
     drawBars(0, height / 2, width / 2, height);
     drawDissection(width / 2, height / 2, width, height);
-    //console.log(song.currentTime());
   }
 
 function drawSpiral(left, top, right, bottom) {
@@ -171,7 +173,6 @@ function drawDissection(left, top, right, bottom) {
         trebleLvl += treble[freq];
     }
     bassLvl = bassLvl / bass.length; midLvl = midLvl / mid.length; trebleLvl = trebleLvl / treble.length;
-    //console.log(bassLvl, midLvl, trebleLvl);
     bassHistory.reverse();
     bassHistory.pop();
     bassHistory.reverse();
@@ -220,4 +221,8 @@ function mouseWheel(event) {
         scroll = -10
     }
     return false;
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
