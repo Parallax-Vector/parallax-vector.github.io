@@ -19,8 +19,8 @@ function setup() {
     buttonH = -height;
     frameRate(30);
     background(1);
-    img = loadImage("assets/static/" + zfill(imgIndex) + ".jpg");
-    nextImage = loadImage("assets/static/" + zfill(imgIndex + 1) + ".jpg");
+    img = loadImage("assets/static/" + zfill(imgIndex) + ".png");
+    nextImage = loadImage("assets/static/" + zfill(imgIndex + 1) + ".png");
 }
 
 function draw() {
