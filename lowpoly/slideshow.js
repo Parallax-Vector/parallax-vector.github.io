@@ -81,7 +81,7 @@ function nextSlide() {
     if (imgIndex > images) {
         imgIndex = 1;
     }
-    img = loadImage("assets/static/" + zfill(imgIndex) + ".jpg");
+    img = loadImage("assets/static/" + zfill(imgIndex) + ".png");
 }
 
 function prevSlide() {
@@ -89,7 +89,7 @@ function prevSlide() {
     if (imgIndex < 1) {
         imgIndex = images;
     }
-    img = loadImage("assets/static/" + zfill(imgIndex) + ".jpg");
+    img = loadImage("assets/static/" + zfill(imgIndex) + ".png");
 }
 
 function mousePressed() {
