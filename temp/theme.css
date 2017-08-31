@@ -32,11 +32,23 @@
     margin-bottom: -21vw;
 }
 
+.mobile {
+    visibility:hidden;
+}
 
 @media screen and (orientation:portrait) {
 
-    #logo {
-        margin:0 auto;
+    .desktop {
+        visibility:collapse;
+        height:0;
+    }
+
+    .content {
+        margin: 5mm 10mm;
+    }
+
+    .mobile {
+        visibility:visible;
     }
 } 
 
