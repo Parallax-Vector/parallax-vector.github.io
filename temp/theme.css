@@ -33,7 +33,7 @@
 }
 
 .mobile {
-    visibility:hidden;
+    visibility:collapse;
     height:0;
 }
 
