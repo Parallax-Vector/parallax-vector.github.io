@@ -50,6 +50,7 @@
 
     .mobile {
         visibility:visible;
+        height: auto;
     }
 } 
 
