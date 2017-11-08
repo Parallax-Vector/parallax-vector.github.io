@@ -1,8 +1,10 @@
+console.log("Well this codebit started!");
+
 function createCanvas() {
 	var canvas = document.createElement('canvas');
 	canvas.id     = "myCanvas";
-	canvas.width  = 640;
-	canvas.height = 640;
+	canvas.width  = 480;
+	canvas.height = 480;
 	canvas.style.zIndex   = 8;
 	canvas.style.position = "absolute";
 	canvas.style.border   = "1px solid";
@@ -10,86 +12,89 @@ function createCanvas() {
 	body.appendChild(canvas);
 	return canvas;
 }
-//create the canvas
+
+function Ant() {
+	this.x = 25;//Math.floor(Math.random()*cols);
+	this.y = 25;//Math.floor(Math.random()*rows);
+	this.dir = 0; //up,right,down,left = 0,1,2,3
+	this.grid = [];
+	this.mode = 1; //0 = b&w ; 1 = freqhue
+	
+	this.update = function() {
+		//change cell and turn depending on cell state
+		if (this.grid[this.y][this.x] <= 0) { //if turned off, switch on
+			this.grid[this.y][this.x] = -this.grid[this.y][this.x] + 10;            //set diversity of color
+			this.dir += 1; //turn right
+		} else {                         //else turn it off
+			this.grid[this.y][this.x] = -this.grid[this.y][this.x] - 10;
+			this.dir -= 1; //turn left
+		}
+		this.dir = this.dir % 4 //deal with edge cases
+		if (this.dir < 0) {
+			this.dir += 4;
+		}
+		//act on direction
+		if (this.dir == 0) { //up
+			this.y -= 1;
+		} else if (this.dir == 1) {
+			this.x += 1;
+		} else if (this.dir == 2) {
+			this.y += 1;
+		} else if (this.dir == 3) {
+			this.x -= 1;
+		}
+		//wrap around edges
+		this.x = this.x % cols;
+		this.y = this.y % rows;
+		if (this.x == -1) {
+			this.x += cols;
+		}
+		if (this.y == -1) {
+			this.y += rows;
+		}
+		return this.grid;
+	}
+}
+
 var c = createCanvas();
 var ctx = c.getContext("2d");
 
-// Create input for user to give a text file
-//insert html drag and drop zone
-var code = '<div id="drop_zone" style="border:1px black dashed; float:right;width:20%;height:10%;text-align:center;">Drop files here</div>\
-			<a href="" id="downloadButton" download><button style="float:right;height:2em;width:8em;">Download</button></a>';
-c.insertAdjacentHTML("beforebegin", code);
+const FPS = 0.5;
 
-// handle the file in javascript 
-function handleFileSelect(evt) {
-evt.stopPropagation();
-evt.preventDefault();
+//create a grid
+const cols = 50;
+const rows = 50;
+const xinterval = c.width / cols;
+const yinterval = c.height/ rows;
 
-var files = evt.dataTransfer.files; // FileList object.
+var ant = new Ant(); //create the ant
 
-var f = files[0];
-var reader = new FileReader();
-reader.onload = function(e) {
-    processText(e.target.result);
-};
-reader.readAsText(f);
-}
-
-function handleDragOver(evt) {
-evt.stopPropagation();
-evt.preventDefault();
-evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-}
-
-// Setup the d'n'd listeners.
-var dropZone = document.getElementById('drop_zone');
-dropZone.addEventListener('dragover', handleDragOver, false);
-dropZone.addEventListener('drop', handleFileSelect, false);
-const FPS = 20;
-
-function processText(txt) {
-	//force lower
-	txt = txt.toLowerCase();
-	//remove punctuation
-	txt = txt.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
-	//turn to array
-	var lines = txt.split("\n");
-	var words = []
-	for (var i = 0; i < lines.length; i++) {
-		var line = lines[i].split(" ");
-		words.push.apply(words,line);
+for (var y = 0; y < rows; y++) {
+	var row = [];
+	for (var x = 0; x < cols; x++) {
+		row.push(0);
 	}
-	console.log(words);
-	var word_cols = {};
-	var grid = [];
-	for (var y = 0; y < words.length; y++) {
-		var row = [];
-		for (var x = 0; x < words.length; x++) {
-			if (words[x] == words[y]) {
-				if (word_cols.hasOwnProperty(words[x])) {
-					row[x] = word_cols[words[x]];
-				} else {
-					//generate a colour for that word
-					word_cols[words[x]] = [Math.random()*360,50]; //using HSL this is H and L
-					row[x] = word_cols[words[x]];
+	ant.grid.push(row);
+}
+
+function draw() {
+	ant.update();
+	//render grid
+	for (var y = 0; y < ant.grid.length; y++) {
+		for (var x = 0; x < ant.grid[0].length; x++) {
+			if (ant.grid[y][x] <= 0) { //off
+				ctx.fillStyle = "rgba(255,255,255)";
+			} else {                   //on
+				if (ant.mode == 0) { //b&w
+					ctx.fillStyle = "rgba(0,0,0)";
+				} else {             //freqhue
+					ctx.fillStyle = "hsl("+ant.grid[y][x]%255+",100%,50%)";
 				}
-			} else {
-				row[x] = [0,0];
 			}
-		}
-		grid[y] = row;
-	}
-	//need to render the grid
-	for (var y = 0; y < grid.length; y++) {
-		for (var x = 0; x < grid[y].length; x++) {
-			//draw a rectangle of that color....
-			var wordcol = grid[y][x];
-			ctx.fillStyle = "hsl("+wordcol[0]+",100%,"+wordcol[1]+"%)"; //Implementing HSL
-			ctx.fillRect(c.width/grid.length * x, c.height/grid.length * y, c.width/grid.length, c.height/grid.length);
+			ctx.fillRect(xinterval*x,yinterval*y,xinterval,yinterval);
 		}
 	}
-	//set download button source to the canvas -> image
-	var downloadButton = document.getElementById('downloadButton');
-	var img = c.toDataURL("image/png");
-	downloadButton.setAttribute('href',img)
+	return;
 }
+
+var run = setInterval(draw,20000);
