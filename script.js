@@ -59,7 +59,7 @@ function Ant() {
 var c = createCanvas();
 var ctx = c.getContext("2d");
 
-const FPS = 0.5;
+const FPS = 5;
 
 //create a grid
 const cols = 50;
@@ -97,4 +97,4 @@ function draw() {
 	return;
 }
 
-var run = setInterval(draw,20000);
+var run = setInterval(draw,1000/FPS);
