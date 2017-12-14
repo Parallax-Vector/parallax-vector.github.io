@@ -102,7 +102,7 @@ function render() {
 			if (iteration < maxIteration) {
 				ctx.fillStyle = "hsl("+(255-iteration*10)%255+",100%,50%)";
 			} else {
-				ctx.fillStyle = "rgba(0,0,0)";
+				ctx.fillStyle = "hsl(0,0%,0%)";
 			}
 			ctx.fillRect(interval*col,interval*row,interval,interval);
 		}
