@@ -83,10 +83,10 @@ function draw() {
 	for (var y = 0; y < ant.grid.length; y++) {
 		for (var x = 0; x < ant.grid[0].length; x++) {
 			if (ant.grid[y][x] <= 0) { //off
-				ctx.fillStyle = "rgba(255,255,255)";
+				ctx.fillStyle = "hsl(0,0%,100%)";
 			} else {                   //on
 				if (ant.mode == 0) { //b&w
-					ctx.fillStyle = "rgba(0,0,0)";
+					ctx.fillStyle = "hsl(0,0%,0%)";
 				} else {             //freqhue
 					ctx.fillStyle = "hsl("+ant.grid[y][x]%255+",100%,50%)";
 				}
